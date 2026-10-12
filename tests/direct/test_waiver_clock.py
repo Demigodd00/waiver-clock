@@ -1,6 +1,7 @@
 from pathlib import Path
 import hashlib
 import json
+import sys
 
 
 CONTRACT = Path(__file__).resolve().parents[2] / "contracts" / "WaiverClock.py"
@@ -23,8 +24,16 @@ def unpack(contract, request_id):
     return json.loads(contract.get_request(request_id))
 
 
+def warp(vm, timestamp):
+    """Keep the direct VM and the SDK's cached message timestamp in sync."""
+    vm.warp(timestamp)
+    gl = sys.modules.get("genlayer.gl")
+    if gl is not None and getattr(gl, "message_raw", None) is not None:
+        gl.message_raw["datetime"] = timestamp
+
+
 def setup(vm, direct_deploy, owner, maintainer):
-    vm.warp("2026-10-12T00:00:00Z")
+    warp(vm, "2026-10-12T00:00:00Z")
     vm.sender = owner
     contract = direct_deploy(str(CONTRACT), sdk_version=SDK)
     contract.create_control("DEP-001", RULE, 86400)
@@ -65,7 +74,7 @@ def test_pass_activates_then_expires(direct_vm, direct_deploy, direct_alice, dir
     assert result["necessity"]["finding_code"] == "NO_COMPLIANT_PATH"
     assert result["mitigation"]["finding_code"] == "BOUNDED_MITIGATION"
     assert contract.is_waiver_active(addr(direct_bob), "DEP-001", "parserlib@2.4") is True
-    direct_vm.warp("2026-10-12T01:00:00Z")
+    warp(direct_vm, "2026-10-12T01:00:00Z")
     assert contract.is_waiver_active(addr(direct_bob), "DEP-001", "parserlib@2.4") is False
     assert unpack(contract, request_id)["effective_status"] == "EXPIRED"
     contract.expire_waiver(request_id)
@@ -174,7 +183,7 @@ def test_renewal_requires_two_fresh_hashes(direct_vm, direct_deploy, direct_alic
     request_id = request(direct_vm, contract, direct_bob)
     judge(direct_vm)
     assess(contract, request_id)
-    direct_vm.warp("2026-10-12T01:00:00Z")
+    warp(direct_vm, "2026-10-12T01:00:00Z")
     direct_vm.sender = direct_bob
     with direct_vm.expect_revert("fresh_evidence_required"):
         request(direct_vm, contract, direct_bob, suffix="v2")
@@ -188,7 +197,7 @@ def test_unfinished_assessment_times_out(direct_vm, direct_deploy, direct_alice,
     request_id = request(direct_vm, contract, direct_bob)
     with direct_vm.expect_revert("assessments_required"):
         contract.finalize_request(request_id)
-    direct_vm.warp("2026-10-20T00:00:00Z")
+    warp(direct_vm, "2026-10-20T00:00:00Z")
     contract.finalize_request(request_id)
     assert unpack(contract, request_id)["status"] == "TIMED_OUT"
 
