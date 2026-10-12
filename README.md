@@ -24,3 +24,9 @@ pytest tests/direct -q
 ```
 
 The exception is an **on-chain WaiverClock status**, which other systems can choose to consult. It does not make an external dependency safe, perform security certification, or guarantee legal or organizational compliance. Evidence must be public and non-sensitive; private records are not suitable for the current protocol.
+
+## Verified StudioNet demonstration
+
+The [StudioNet contract](https://explorer-studio.genlayer.com/address/0xeF9aFB82e72256b3A5d41c548D3faF5E4AECb0e8) established a synthetic documentation-formatting control, submitted one waiver request with two public hash-bound evidence files, recorded separate `PASS` findings for necessity and mitigation, and finalized the one-hour waiver as `ACTIVE`. The [deployment record](deployments/studionet.json) contains every transaction, exact source commit, hashes, and observed state. The source was fetched back from the chain and matched to that public commit.
+
+The one-hour demo approval is not a permanent current state; it becomes ineffective automatically at its deadline. Its owner was a disposable StudioNet-only wallet whose private key was not retained. Redeploy with a retained owner wallet for operational use.

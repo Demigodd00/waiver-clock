@@ -1,0 +1,52 @@
+{
+  "network": "studionet",
+  "chain_id": 61999,
+  "status": "VERIFIED_SOURCE_AND_DEMO",
+  "source_commit": "f9453a2cc7500ac87923e4cdbc9c69e2adf43353",
+  "source_sha256": "1b5ce5b5a3b13b504c0abb48357bfa92122103d70da0c29a53710c329fbed137",
+  "source_url": "https://raw.githubusercontent.com/Demigodd00/waiver-clock/f9453a2cc7500ac87923e4cdbc9c69e2adf43353/contracts/WaiverClock.py",
+  "contract_address": "0xeF9aFB82e72256b3A5d41c548D3faF5E4AECb0e8",
+  "explorer": "https://explorer-studio.genlayer.com/address/0xeF9aFB82e72256b3A5d41c548D3faF5E4AECb0e8",
+  "deployed_at": "2026-10-12T19:32:47.411650+00:00",
+  "deploy_transaction": "0xf47dd1408100787283b380cac5da377368774b66510941900b04494ee35d32b5",
+  "owner": "0xbd10973aD3D92a5e129E260aC30FC7ABB0755908",
+  "wallet_policy": "disposable StudioNet-only owner; private key not retained",
+  "evidence": {
+    "necessity_url": "https://raw.githubusercontent.com/Demigodd00/waiver-clock/f9453a2cc7500ac87923e4cdbc9c69e2adf43353/evidence/demo/necessity.md",
+    "necessity_sha256": "8fe346375709bfb8a11344839d764444a7528641c3140a6d0a95015880ffba4e",
+    "mitigation_url": "https://raw.githubusercontent.com/Demigodd00/waiver-clock/f9453a2cc7500ac87923e4cdbc9c69e2adf43353/evidence/demo/mitigation.md",
+    "mitigation_sha256": "a5c203735bd6ae3df501403f393214399b17bd785a2751ff2dce12b60eb3aca5"
+  },
+  "transactions": {
+    "create_control": "0x90710dc075dd76051f6900f1060a6112bb27b09e156c8a5acceccbbb0db48fcb",
+    "request_waiver": "0xcf968794fb05eab35e535b0855f97d36cfc3b0f492f671b44f10a1fd59744f75",
+    "assess_necessity": "0xc813dcbcdf8bb36fb9859c039ab9eb6b895b03031ef3b50594d44bd6e6cd7fa0",
+    "assess_mitigation": "0x2b5d290b84d82677b22aca5e5705de0b3c0c7871771a8aab3ac5868e34e8a7d0",
+    "finalize_request": "0x7af6a50b610f51453f148e08497e5da48ba0c2211fb88e4296ba4a0ab3ee95f4"
+  },
+  "observed_request": {
+    "id": 1,
+    "control_id": "DOC-001",
+    "control_version": 1,
+    "subject": "docs/release-notes-2.0.md",
+    "necessity": {
+      "evidence_state": "VERIFIED",
+      "finding_code": "NO_COMPLIANT_PATH",
+      "outcome": "PASS"
+    },
+    "mitigation": {
+      "evidence_state": "VERIFIED",
+      "finding_code": "BOUNDED_MITIGATION",
+      "outcome": "PASS"
+    },
+    "status_at_finalization": "ACTIVE",
+    "activated_at_unix": 1791833525,
+    "expires_at_unix": 1791837125
+  },
+  "verification": "The finalized deployment succeeded, and gen_getContractCode matched the full-commit public source. All five demonstration writes finalized successfully. The one-hour synthetic waiver may now be expired; ACTIVE is the status observed immediately after finalization.",
+  "abandoned_first_deployment": {
+    "address": "0x974874F954078cfC124579d584A733E6e39e29C9",
+    "transaction": "0x35e90a8e1c8e84f5607d4462f801a5c021ae24f20ca43360532200d80fd621ab",
+    "reason": "Receipt polling connection dropped after deployment; source later verified, but the disposable owner key was not retained and no demo control was created."
+  }
+}
