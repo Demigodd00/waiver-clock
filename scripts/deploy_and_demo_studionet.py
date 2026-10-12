@@ -6,6 +6,7 @@ import base64
 import hashlib
 import json
 import subprocess
+import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -15,6 +16,7 @@ from eth_utils import to_checksum_address
 from genlayer_py import create_client
 from genlayer_py.assertions import tx_execution_succeeded
 from genlayer_py.chains import studionet
+from genlayer_py.exceptions import GenLayerError
 from genlayer_py.types import TransactionHashVariant, TransactionStatus
 
 
@@ -41,13 +43,25 @@ def tx_hex(value: object) -> str:
 
 
 def wait(client, tx) -> dict:
-    receipt = client.wait_for_transaction_receipt(
-        transaction_hash=tx_hex(tx),
-        status=TransactionStatus.FINALIZED,
-        interval=5_000,
-        retries=120,
-        full_transaction=True,
-    )
+    receipt = None
+    for attempt in range(10):
+        try:
+            receipt = client.wait_for_transaction_receipt(
+                transaction_hash=tx_hex(tx),
+                status=TransactionStatus.FINALIZED,
+                interval=5_000,
+                retries=120,
+                full_transaction=True,
+            )
+            break
+        except GenLayerError as error:
+            print(json.dumps({
+                "step": "poll_retry", "transaction": tx_hex(tx),
+                "attempt": attempt + 1, "error": str(error)[:180],
+            }), flush=True)
+            time.sleep(5)
+    if receipt is None:
+        raise RuntimeError("receipt polling failed repeatedly: " + tx_hex(tx))
     if (receipt.get("status_name") or receipt.get("statusName")) != TransactionStatus.FINALIZED.value:
         raise RuntimeError("transaction did not finalize: " + tx_hex(tx))
     if not tx_execution_succeeded(receipt):
